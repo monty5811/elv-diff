@@ -1,0 +1,46 @@
+{
+  "name": "elv-diff",
+  "description": "get notified when something changes in Elvanto",
+  "keywords": [
+    "elvanto"
+  ],
+  "website": "https://github.com/monty5811/elv-diff",
+  "repository": "https://github.com/monty5811/elv-diff",
+  "scripts": {
+    "postdeploy": "./elv_diff.py"
+  },
+  "formation": {
+    "web": {
+      "quantity": 0,
+      "size": "free"
+    }
+  },
+  "env": {
+    "ELVANTO_KEY": {
+      "description": "Elvanto API Key",
+      "value": ""
+    },
+    "ELVANTO_DOMAIN": {
+      "description": "Domain we can reach your Elvanto instance at. e.g. mychurch.elvanto.eu",
+      "value": ""
+    },
+    "SLACK_URL": {
+      "description": "Slack incoming webhook",
+      "value": ""
+    },
+    "SLACK_USERNAME": {
+      "description": "Bot username",
+      "value": "elvanto-updates"
+    },
+    "SLACK_CHANNEL": {
+      "description": "Slack channel to post to",
+      "value": "elvanto-updates"
+    }
+  },
+  "addons": [
+    "mongolab:sandbox",
+    "papertrail:choklad",
+    "opbeat:free",
+    "scheduler:standard"
+  ]
+}

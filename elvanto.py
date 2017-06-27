@@ -35,8 +35,18 @@ people_fields = [
     # TODO handle custom fields
 ]
 
+group_fields = [
+    'people',
+    # 'categories',
+    # 'departments',
+    # 'demographics',
+    # 'locations',
+]
+
 
 class ElvantoApiException(Exception):
+    """Generic Elvanto Exception."""
+
     pass
 
 
@@ -44,6 +54,7 @@ s = requests.Session()
 
 
 def retry_request(url, http_method, *args, **kwargs):
+    """Retry failed requests 3 times."""
     assert http_method in ['get', 'post', 'delete', 'patch', 'put']
     MAX_TRIES = 3
     r_func = getattr(s, http_method)
@@ -59,6 +70,7 @@ def retry_request(url, http_method, *args, **kwargs):
 
 
 def e_api(end_point, **kwargs):
+    """Elvanto api client."""
     ELVANTO_KEY = os.environ.get('ELVANTO_KEY')
     base_url = 'https://api.elvanto.com/v1/'
     e_url = '{0}{1}.json'.format(base_url, end_point)
@@ -70,13 +82,9 @@ def e_api(end_point, **kwargs):
         raise ElvantoApiException(data['error'])
 
 
-def pull_people():
-    name = 'people'
-    end_point = 'people/getAll'
-    fields = people_fields
-    ident = 'person'
+def pull_data(name, end_point, fields, ident):
+    """Page through elvanto resource."""
     page = 1
-
     data = e_api(
         end_point,
         page_size=1000,
@@ -100,3 +108,21 @@ def pull_people():
         num_synced += more_data[name]['on_this_page']
 
     return {x['id']: x for x in items}
+
+
+def pull_people():
+    """Pull people from elvanto."""
+    name = 'people'
+    end_point = 'people/getAll'
+    fields = people_fields
+    ident = 'person'
+    return pull_data(name, end_point, fields, ident)
+
+
+def pull_groups():
+    """Pull groups from elvanto."""
+    name = 'groups'
+    end_point = 'groups/getAll'
+    fields = group_fields
+    ident = 'group'
+    return pull_data(name, end_point, fields, ident)
